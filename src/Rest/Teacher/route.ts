@@ -8,9 +8,13 @@ import {
     registerNewTeacherController
 } from "./controller"
 
-route.get ("/get/all", showAllTeacherController)
+//middleware
+import auth from "../../../middleware/auth"
+import authorization from "../../../middleware/authorization"
 
-route.put ("/delete/:slug", deleteTeacherBySlugController)
+route.get ("/get/all" , auth, authorization ("admin"), showAllTeacherController)
+
+route.put ("/delete/:slug", auth, authorization ("admin"), deleteTeacherBySlugController)
 
 route.post ("/registration", registerNewTeacherController)
 
