@@ -8,7 +8,9 @@ interface Course {
     slug: string,
     enrolledStudent : [Student],
     quizzes: [Quiz],
-    instructor: Teachers
+    instructor: Teachers,
+    courseName: string,
+    duration: string
 }
 
 

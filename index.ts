@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import studentRoute from "./src/Rest/Student/route"
 import teacherRoute from "./src/Rest/Teacher/route"
 import userRoute from "./src/Rest/User/route"
+import courseRoute from "./src/Rest/Course/route"
 
 const app:Application = express();
 
@@ -38,6 +39,7 @@ app.listen (url, () => console.log(`Server is running on ${url}`))
 app.use("/student", studentRoute)
 app.use("/teacher", teacherRoute)
 app.use("/user", userRoute)
+app.use("/course", courseRoute)
 
 
 //base route

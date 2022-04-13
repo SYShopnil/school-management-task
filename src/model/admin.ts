@@ -27,3 +27,4 @@ const adminSchema = new Schema <AdminInterface> ({
 })
 //export part
 export default  mongoose.model <AdminInterface>("Admins", adminSchema)
+

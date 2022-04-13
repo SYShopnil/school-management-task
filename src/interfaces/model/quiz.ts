@@ -2,7 +2,9 @@ import Course from  "./course"
 import Question from "./question"
 import Result from "./result"
 
+
 interface Quiz {
+    _id: any,
     quizId:string,
     slug: string,
     courseId: Course,

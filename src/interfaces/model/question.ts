@@ -1,10 +1,11 @@
 import Quiz from "./quiz"
 interface Options {
-    no: String,
-    option: String,
+    no: string,
+    option: string,
 }
 
 interface Question {
+    _id:string,
     questionId: string,
     slug: string,
     quiz: Quiz ,

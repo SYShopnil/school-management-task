@@ -44,6 +44,8 @@ const uploadProfilePictureDefault: (userType:string, userID:string) => Promise <
         base64 = fs.readFileSync (`${__dirname}/../assert/teacherDefault.png`, "base64") //it will convert local default image to base64 format
     }else  if (userType.toLowerCase() == "student") {
         base64 = fs.readFileSync (`${__dirname}/../assert/studentDefault.png`, "base64") //it will convert local default image to base64 format
+    }else  if (userType.toLowerCase() == "admin") {
+        base64 = fs.readFileSync (`${__dirname}/../assert/studentDefault.png`, "base64") //it will convert local default image to base64 format
     }else {
         base64 = fs.readFileSync (`${__dirname}/../assert/userDefault.png`, "base64") //it will convert local default image to base64 format
     }

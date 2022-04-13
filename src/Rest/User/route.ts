@@ -8,8 +8,8 @@ import {
     verifyTheForgotPasswordOTPController,
     resetPasswordController,
     updateLoggedInUserPassword,
-    updateOwnProfileController
-
+    updateOwnProfileController,
+    showOwnProfileController
 } from "./controller"
 
 //middleware 
@@ -21,6 +21,7 @@ route.post ("/forgotPassword/verify/user", forgotPasswordPartOneController)
 route.post ("/forgotPassword/verify/otp", verifyTheForgotPasswordOTPController) 
 route.post ("/forgotPassword/done", resetPasswordController) 
 route.post ("/update/password", auth, updateLoggedInUserPassword) 
-route.post ("/update/profile", auth, updateOwnProfileController) 
+route.put ("/update/profile", auth, updateOwnProfileController) 
+route.get ("/show/profile", auth, showOwnProfileController) 
 
 export default route

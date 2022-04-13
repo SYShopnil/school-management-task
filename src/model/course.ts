@@ -8,6 +8,14 @@ const courseSchema = new Schema <CourseInterface>({
         type: String,
         required: true,
     },
+    courseName: {
+        type: String,
+        required: true,
+    },
+    duration: {
+        type: String,
+        required: true,
+    },
     slug:{
         type: String,
         unique: true

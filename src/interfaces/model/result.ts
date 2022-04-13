@@ -9,6 +9,7 @@ interface StudentResponse {
 }
 
 interface Result {
+    _id: any,
     resultId: string,
     slug: string,
     quiz: Quiz,

@@ -192,17 +192,17 @@ const registerNewTeacherController: (req:Request, res:Response) => Promise <void
                     user: newUserDatabaseId
                 })
                 const saveNewTeacher: TeacherProfileInterface = await createTeacherProfile.save ();
-                if (Object.keys(saveNewTeacher).length != 0) { //if user create successfully then
+                if (Object.keys(saveNewTeacher).length != 0) { //if teacher profile create successfully then
                     const {_id:newTeacherDataBaseId}:any = saveNewTeacher;
-                    const updateUserSchema:UpdateReturn = await Teacher.updateOne (
+                    const updateUserSchema:UpdateReturn = await User.updateOne (
                         { 
-                            _id: newTeacherDataBaseId,
+                            _id: newUserDatabaseId,
                             isActive: true,
                             isDeleted: false
                         },
                         {
                             $set : {
-                                teacherProfile: newUserDatabaseId
+                                teacherProfile: newTeacherDataBaseId
                             }
                         }
                     )
@@ -245,6 +245,7 @@ const registerNewTeacherController: (req:Request, res:Response) => Promise <void
         })
     }
 }
+
 
 export {
     showAllTeacherController,

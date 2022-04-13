@@ -315,42 +315,53 @@ const resetPasswordController:(req:Request, res:Response) => Promise <void>  = a
 const updateLoggedInUserPassword:(req:Request, res:Response) => Promise <void>  = async (req, res) => {
     try {
         const {
-            newPassword:password
+            newPassword:password,
+            currentPassword:oldPassword
         }: {
-            newPassword:string
+            newPassword:string,
+            currentPassword: string
         } = req.body
-
-        const hashedPassword = await bcrypt.hash (password, 10) //hashed the password 
-        if (hashedPassword) { //if password hashed successfully
-            const {slug, userType}:UserInterface = req.user
-            let isUpdate:boolean = false
-            const updatePassword:UpdateReturn = await User.updateOne (
-                    {
-                        slug,
-                        userType,
-                        "isDelete": false
-                    },
-                    {
-                        $set: {
-                            password: hashedPassword
+        const {
+            password:currentLoggedInUsePassword
+        }:UserInterface = req.user
+        const isMatch:boolean = await bcrypt.compare (oldPassword, currentLoggedInUsePassword) 
+        if (isMatch) {
+             const hashedPassword = await bcrypt.hash (password, 10) //hashed the password 
+            if (hashedPassword) { //if password hashed successfully
+                const {slug, userType}:UserInterface = req.user
+                let isUpdate:boolean = false
+                const updatePassword:UpdateReturn = await User.updateOne (
+                        {
+                            slug,
+                            userType,
+                            "isDelete": false
+                        },
+                        {
+                            $set: {
+                                password: hashedPassword
+                            }
                         }
-                    }
                 ) //update the logged in admin's password
                 if (updatePassword.modifiedCount != 0) {
                     isUpdate = true
                 }
-            if (isUpdate) {
-                res.status (202).json ({
-                    message: "Password updated successfully"
-                })
+                if (isUpdate) {
+                    res.status (202).json ({
+                        message: "Password updated successfully"
+                    })
+                }else {
+                    res.json ({
+                        message: "Password update failed"
+                    })
+                }
             }else {
                 res.json ({
-                    message: "Password update failed"
+                    message: "Password hashing problem"
                 })
             }
         }else {
-            res.json ({
-                message: "Password hashing problem"
+            res.status (202).json ({
+                message: "Current Password is wrong!!!"
             })
         }
     }catch (err) {
@@ -473,7 +484,7 @@ const showOwnProfileController :(req:Request, res:Response) => Promise <void>  =
             slug,
             userId
         }:UserInterface = req.user; //get the logged in use data 
-        let returnUser: UserInterface | {};
+        let returnUser: UserInterface | {} = {};
         if (userType == "admin") {
             const findAdmin:UserInterface | null = await User.findOne ({
                 userType,
@@ -485,9 +496,9 @@ const showOwnProfileController :(req:Request, res:Response) => Promise <void>  =
             }).populate (
                 {
                     path: "adminProfile",
-                    select: "-id"
+                    select: "-_id -user"
                 }
-            ).select ("-password") //it will give all user except the password 
+            )
             if (findAdmin) {
                 returnUser = findAdmin
             }else {
@@ -504,18 +515,52 @@ const showOwnProfileController :(req:Request, res:Response) => Promise <void>  =
             }).populate (
                 {
                     path: "teacherProfile",
-                    select: "-id"
+                    select: "-_id -user"
                 }
-            ).select ("-password") //it will give all user except the password 
+            )
             if (findTeacher) {
                 returnUser = findTeacher
             }else {
                 returnUser = {}
             }
+        }else if (userType == "student"){
+            const findStudent:UserInterface | null = await User.findOne ({
+                userType,
+                userId,
+                _id,
+                slug,
+                isDeleted: false,
+                isActive:true
+            }).populate (
+                {
+                    path: "studentProfile",
+                    select: "-_id -user"
+                }
+            )
+            if (findStudent) {
+                returnUser = findStudent
+            }else {
+                returnUser = {}
+            }
+        }
+        if (Object.values (returnUser).length != 0) { //if user profile found then it will happen
+            res.json ({
+                message: "Profile Found!!!",
+                data: returnUser,
+                status: 202
+            })
+        }else {
+            res.json ({
+                message: "Profile Not Found!!!",
+                data: null,
+                status: 404
+            })
         }
     }catch (err) {
         res.json ({
-            message: err
+            message: err,
+            data: null,
+            status: 406
         })
     }
 }
